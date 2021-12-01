@@ -78,7 +78,7 @@ def main():
 
 
     # load the image files
-    imgFiles = ['squirrel.png','Skin_brown.png']
+    imgFiles = ['squirrel.png','Skin_brown.png','Skin_red.png']
     SQUIR_IMG = []
     for name in imgFiles:
         img = []
