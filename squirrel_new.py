@@ -7,8 +7,8 @@ import random, sys, time, math, pygame, shelve
 from pygame.locals import *
 from pygame import mixer
 
-SQUIRREL=pygame.image.load('Fox.png')
-rot_squirrel_img = pygame.transform.flip(SQUIRREL, True, False)
+SQUIRREL=pygame.image.load('Fox.png') # load the player image
+rot_squirrel_img = pygame.transform.flip(SQUIRREL, True, False) # flip the player image when facing changes
 
 FPS = 30 # frames per second to update the screen
 WINWIDTH = 640 # width of the program's window, in pixels
@@ -21,7 +21,6 @@ WHITE = (240, 255, 240)
 RED = (255, 0, 0)
 
 CAMERASLACK = 90     # how far from the center the squirrel moves before moving the camera
-         # how fast the player moves
 BOUNCERATE = 6       # how fast the player bounces (large is slower)
 BOUNCEHEIGHT = 20    # how high the player bounces
 STARTSIZE = 25      # how big the player starts off
@@ -39,7 +38,6 @@ DIRCHANGEFREQ = 2    # % chance of direction change per frame
 LEFT = 'left'
 RIGHT = 'right'
 
-timer_event = pygame.USEREVENT+1
 
 """
 This program has three data structures to represent the player, enemy squirrels, and grass background objects. The data structures are dictionaries with the following keys:
@@ -74,7 +72,7 @@ def main():
     FPSCLOCK = pygame.time.Clock()
     pygame.display.set_icon(pygame.image.load('gameicon.png'))
     DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
-    pygame.display.set_caption('Squirrel Eat Squirrel')
+    pygame.display.set_caption('Fox Eat Squirrel')
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
 
 
@@ -95,18 +93,17 @@ def main():
     while True:
         runGame()
 
-class Page(object):
-    def __init__(self):
-        self.SCORE_VALUE = 0
         
 def runGame():
     # set up variables for the start of a new game
-    counter = 30
-    SCORE_VALUE= 0
-    MOVERATE = 9
-
-        
-    pygame.time.set_timer(timer_event, 1000)
+    SCORE_VALUE= 0 # initial score of 0
+    MOVERATE = 9 # how fast the player moves
+    
+    # Timer
+    counter = 30 # time limit of 30 seconds
+    timer_event = pygame.USEREVENT+1 # define the timer event   
+    pygame.time.set_timer(timer_event, 1000) #time interval is 1 second
+    
     invulnerableMode = False  # if the player is invulnerable
     invulnerableStartTime = 0 # time the player became invulnerable
     gameOverMode = False      # if the player has lost
@@ -119,7 +116,7 @@ def runGame():
     gameOverRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
     
 
-    winSurf = BASICFONT.render('You have achieved OMEGA SQUIRREL!', True, WHITE)
+    winSurf = BASICFONT.render('You have achieved OMEGA FOX!', True, WHITE)
     winRect = winSurf.get_rect()
     winRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
 
@@ -240,10 +237,10 @@ def runGame():
             if event.type == QUIT:
                 terminate()
             
-            elif event.type == timer_event:
-                counter -= 1
-                if counter == 0:
-                    pygame.time.set_timer(timer_event, 0)
+            elif event.type == timer_event: # receive the timer event in the event loop
+                counter -= 1 # counter number decreases by 1
+                if counter == 0: # when counter number comes to 0
+                    pygame.time.set_timer(timer_event, 0) # stop the timer event by passing 0 to the time parameter
                     
                     
             elif event.type == KEYDOWN:
@@ -307,9 +304,9 @@ def runGame():
                     # a player/squirrel collision has occurred
 
                     if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
-                        SCORE_VALUE += 1
-                        mixer.music.load ('WinSound3.wav')
-                        mixer.music.play (0)
+                        SCORE_VALUE += 1 # add 1 point if player is larger than the squirrel
+                        mixer.music.load ('WinSound3.wav') # load sound file for playback
+                        mixer.music.play (0) # start the playback of the music stream
                         # player is larger and eats the squirrel
                         playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
                         del squirrelObjs[i]
@@ -319,7 +316,7 @@ def runGame():
                         if playerObj['facing'] == RIGHT:
                             playerObj['surface'] = pygame.transform.scale(rot_squirrel_img, (playerObj['size'], playerObj['size']))
                         
-                        if SCORE_VALUE > 8:
+                        if SCORE_VALUE > 8: # slow down if the player gains over 8 points
                             MOVERATE = 7
                         
                         if playerObj['size'] > WINSIZE:
@@ -330,14 +327,14 @@ def runGame():
                         # player is smaller and takes damage
                         invulnerableMode = True
                         invulnerableStartTime = time.time()
-                        mixer.music.load ('Eaten.wav')
-                        mixer.music.play (0)
+                        mixer.music.load ('Eaten.wav') # load sound file for playback
+                        mixer.music.play (0) # start the playback of the music stream
                         playerObj['health'] -= 1
                
-                        if playerObj['health'] == 0 or counter == 0:
+                        if playerObj['health'] == 0 or counter == 0: # if no lives or no time
                            gameOverMode = True # turn on "game over mode"
-                           mixer.music.load ('gameOverSound.wav')
-                           mixer.music.play (0)
+                           mixer.music.load ('gameOverSound.wav') # load sound file for playback
+                           mixer.music.play (0) # start the playback of the music stream
                            gameOverStartTime = time.time()
                     
         else:
@@ -353,9 +350,9 @@ def runGame():
             
             
         score = BASICFONT.render("Score:"+str(SCORE_VALUE),True, WHITE)
-        DISPLAYSURF.blit(score,(500,10))
+        DISPLAYSURF.blit(score,(500,10)) # display score
         text = BASICFONT.render("Timer: "+str(counter), True, (255,255,0))
-        DISPLAYSURF.blit(text,(255,10))
+        DISPLAYSURF.blit(text,(255,10)) # display timer
             
             
         pygame.display.update()
